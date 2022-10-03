@@ -69,7 +69,7 @@ public class Program
         writer.Close();
     }
 
-    private static string AskForOutput()
+    private static string? AskForOutput()
     {
         Console.WriteLine( "Enter output file: " );
 
@@ -77,6 +77,7 @@ public class Program
         if ( output == null )
         {
             Console.WriteLine( "Invalid input" );
+            return null;
         }
 
         return output;

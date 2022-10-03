@@ -33,7 +33,7 @@ public class StringReaderService
 
         string word = "";
 
-        while ( !StringUtils.IsWhitespace( _symbol ) )
+        while ( !Char.IsWhiteSpace( _symbol ) )
         {
             word += _symbol;
 
@@ -51,7 +51,7 @@ public class StringReaderService
 
     private void ReadUntilWordOrEndOfLine()
     {
-        while ( !_endOfString && StringUtils.IsWhitespace( _symbol ) && _symbol != '\r' && _symbol != '\n' )
+        while ( !_endOfString && Char.IsWhiteSpace( _symbol ) && _symbol != '\r' && _symbol != '\n' )
         {
             _currentPosition++;
         }
@@ -61,7 +61,7 @@ public class StringReaderService
 
     private void ReadUntilWord()
     {
-        while ( !_endOfString && StringUtils.IsWhitespace( _symbol ) )
+        while ( !_endOfString && Char.IsWhiteSpace( _symbol ) )
         {
             _currentPosition++;
         }

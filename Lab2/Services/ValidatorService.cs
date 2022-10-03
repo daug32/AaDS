@@ -28,6 +28,7 @@ public class ValidatorService : IValidatorService
         int tabsMultipier = 2;
 
         bool hadEndOfLine = false;
+        string text = "";
 
         for ( string word = _stringReader.NextWord(); word.Length > 0; word = _stringReader.NextWord() )
         {
@@ -40,13 +41,15 @@ public class ValidatorService : IValidatorService
             string tabs = !hadEndOfLine ? "" : new String( ' ', tabsCount * tabsMultipier );
             hadEndOfLine = _stringReader.IsEndOfLine;
 
-            copy( $"{tabs}{word}{( _stringReader.IsEndOfLine ? '\n' : ' ' )}" );
+            text += $"{tabs}{word}{( _stringReader.IsEndOfLine ? '\n' : ' ' )}";
 
             if ( keyword == Keywords.For )
             {
                 tabsCount++;
             }
         }
+
+        copy( text );
     }
 
     public bool IsSyntaxCorrect()
@@ -101,12 +104,12 @@ public class ValidatorService : IValidatorService
             return false;
         }
 
-        if ( !StringUtils.IsLetter( word[ 0 ] ) )
+        if ( !Char.IsLetter( word[ 0 ] ) )
         {
             return false;
         }
 
-        if ( word.Length > 1 && !StringUtils.IsNumber( word[ 1 ] ) )
+        if ( word.Length > 1 && !Char.IsNumber( word[ 1 ] ) )
         {
             return false;
         }
@@ -131,7 +134,7 @@ public class ValidatorService : IValidatorService
 
         else if ( wordsAfterLastKeywordWithId == 2 )
         {
-            if ( !StringUtils.IsOperator( word ) && !StringUtils.StartsWithOperator( word ) )
+            if ( !Utils.IsOperator( word ) && !Utils.StartsWithOperator( word ) )
             {
                 return false;
             }
