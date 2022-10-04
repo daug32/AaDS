@@ -1,4 +1,5 @@
 ﻿using Lab2.Models;
+using Lab2.Services;
 
 namespace Lab2.Tests;
 
@@ -13,6 +14,8 @@ internal class CustomStackTest
         TestPushAndPop();
         TestPushAndPop( 1 );
         TestPushAndPop( 1, 2, 3, 4, 5 );
+
+        Console.WriteLine( $"{nameof( CustomStack<int> )} was tested successfuly" );
     }
 
     private static void TestPushAndPop( params int[] items )

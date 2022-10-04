@@ -9,6 +9,8 @@ public static class StringReaderServiceTest
     public static void RunTests()
     {
         TestWhitespaces();
+
+        Console.WriteLine( $"{nameof( StringReaderService )} was tested successfuly" );
     }
 
     private static void TestWhitespaces()

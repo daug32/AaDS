@@ -10,6 +10,8 @@ internal class ValidationServiceTest
     {
         TestSyntax();
         TestNestedCycles();
+
+        Console.WriteLine( $"{nameof( ValidatorService )} was tested successfuly" );
     }
 
     private static void TestNestedCycles()
@@ -38,11 +40,10 @@ internal class ValidationServiceTest
         TestSyntax( "", true );
 
         TestSyntax( "FOR i = something NEXT i", true );
-        TestSyntax( "FOR i1 = something    NEXT i1", true );
-        TestSyntax( "FOR m2 = something NEXT b9", true );
-        TestSyntax( "something      useful FOR m2 = something is there NEXT b9", true );
-
         TestSyntax( "FOR i =something NEXT i", true );
+        TestSyntax( "FOR m2 = something NEXT b9", true );
+        TestSyntax( "FOR i1 = something      NEXT i1", true );
+        TestSyntax( "something      useful FOR m2 = something is there NEXT b9", true );
 
         // Incorrect id
         TestSyntax( "FOR 1 = something NEXT i", false );
@@ -50,6 +51,7 @@ internal class ValidationServiceTest
         TestSyntax( "FOR ii9 = something NEXT i", false );
         TestSyntax( "FOR iii = something NEXT i", false );
         TestSyntax( "FOR i = something NEXT someone", false );
+        TestSyntax( "FOR = something NEXT someone", false );
 
         // Incorrect syntax
         //TestSyntax( "FOR i i = something NEXT i", false );
