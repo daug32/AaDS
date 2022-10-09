@@ -3,7 +3,7 @@ using Lab2.Tests;
 
 namespace Lab2;
 
-/*
+/* Иванов Дмитрий ПС-22 Visual Studio 2022 c#
 20. Текст программы на диалекте бейсика включает циклы вида
     FOR ID=
      ...............
@@ -56,16 +56,18 @@ public class Program
     private static void CheckValidation( string input, string output )
     {
         var text = File.ReadAllText( input );
-        var writer = new StreamWriter( output, false );
 
         IValidatorService validatorService = new ValidatorService( text );
         if ( !validatorService.IsSyntaxCorrect() )
         {
-            Console.WriteLine( "The program is not valid" );
+            Console.WriteLine( $"The program is not valid. " +
+                $"An error occured at {validatorService.CurrentLine}:{validatorService.CurrentSymbolNumberInLine}" );
             return;
         }
 
+        var writer = new StreamWriter( output, false );
         validatorService.Copy( writer.Write );
+
         writer.Close();
     }
 

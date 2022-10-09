@@ -4,6 +4,9 @@ namespace Lab2.Services;
 
 public interface IValidatorService
 {
+    int CurrentLine { get; }
+    int CurrentSymbolNumberInLine { get; }
+
     bool IsSyntaxCorrect();
 
     void Copy( Action<string> copy );
@@ -13,11 +16,15 @@ public class ValidatorService : IValidatorService
 {
     private readonly StringReaderService _stringReader;
     private readonly CustomStack<Keywords> _activeNestings;
+    private readonly CustomStack<string> _usedIds;
+    public int CurrentLine => _stringReader.CurrentLine;
+    public int CurrentSymbolNumberInLine => _stringReader.CurrentSymbolNumberInLine;
 
     public ValidatorService( string text )
     {
         _stringReader = new StringReaderService( text );
         _activeNestings = new CustomStack<Keywords>();
+        _usedIds = new CustomStack<string>();
     }
 
     public void Copy( Action<string> copy )
@@ -129,6 +136,19 @@ public class ValidatorService : IValidatorService
             if ( !CheckId( word ) )
             {
                 return false;
+            }
+
+            if ( prevKeyword == Keywords.For )
+            {
+                _usedIds.Push( word );
+            }
+            else if ( prevKeyword == Keywords.Next )
+            {
+                var prevId = _usedIds.Pop();
+                if ( prevId != word )
+                {
+                    return false;
+                }
             }
         }
 

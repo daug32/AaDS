@@ -20,18 +20,18 @@ internal class ValidationServiceTest
 
         text = @"FOR I1 = 123
                     FOR I3 = 321
-                    NEXT I4
-                NEXT I2";
+                    NEXT I3
+                NEXT I1";
         TestSyntax( text, true );
 
         text = @"FOR I1 = 123 
                     FOR I3 
-                NEXT I2";
+                NEXT I1";
         TestSyntax( text, false );
 
         text = @"FOR I1 = 123 
                     NEXT I4 
-                NEXT I2";
+                NEXT I1";
         TestSyntax( text, false );
     }
 
@@ -41,11 +41,13 @@ internal class ValidationServiceTest
 
         TestSyntax( "FOR i = something NEXT i", true );
         TestSyntax( "FOR i =something NEXT i", true );
-        TestSyntax( "FOR m2 = something NEXT b9", true );
+        TestSyntax( "FOR m2 = something NEXT m2", true );
         TestSyntax( "FOR i1 = something      NEXT i1", true );
-        TestSyntax( "something      useful FOR m2 = something is there NEXT b9", true );
+        TestSyntax( "something      useful FOR m2 = something is there NEXT m2", true );
 
         // Incorrect id
+        TestSyntax( "FOR i = something NEXT i1", false );
+
         TestSyntax( "FOR 1 = something NEXT i", false );
         TestSyntax( "FOR ii = something NEXT i", false );
         TestSyntax( "FOR ii9 = something NEXT i", false );
