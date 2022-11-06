@@ -1,4 +1,5 @@
-﻿using Lab3.Services;
+﻿using Lab3.Models;
+using Lab3.Services;
 using Lab3.Tests;
 
 namespace Lab3;
@@ -53,6 +54,8 @@ public class Program
         {
             CustomTreeTest.RunTests();
             TreeReaderServiceTest.RunTests();
+            CustomTreeBuilderTest.RunTests();
+
             Console.WriteLine();
         }
         catch ( Exception ex )
@@ -79,7 +82,11 @@ public class Program
     {
         var fileStream = new StreamReader( input );
         var readerService = new TreeReaderService( fileStream );
-        var tree = readerService.ReadFile( true );
+        var treeBuilder = new CustomTreeBuilder<int>( new Int32Comparer() );
+
+        var nodes = readerService.ReadFile( true );
+
+        var tree = treeBuilder.Build( nodes );
 
         var optimalValues = tree
             .Optimize()

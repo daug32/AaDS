@@ -10,6 +10,8 @@ internal interface ICustomTreeDebug<T>
 
     void ForEach( Action<T> func );
 
+    bool Exists( T data );
+
     List<T> Optimize();
 
     int GetDepth( T targetValue );
@@ -257,5 +259,15 @@ public class CustomTree<T> : ICustomTreeDebug<T>
         }
 
         _head = node;
+    }
+
+    public bool Exists( T data )
+    {
+        if ( IsEmpty )
+        {
+            return false; 
+        }
+
+        return Find( data, new List<CustomTreeNode<T>>() { _head! } ) != null;
     }
 }

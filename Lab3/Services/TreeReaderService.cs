@@ -10,7 +10,7 @@ public interface ITreeReaderService
 
     void Dispose();
 
-    CustomTree<int> ReadFile( bool readAll = false );
+    List<(int, int)> ReadFile( bool readAll = false );
 }
 
 public class TreeReaderService : IDisposable, ITreeReaderService
@@ -32,9 +32,9 @@ public class TreeReaderService : IDisposable, ITreeReaderService
         ComputersNumber = computersNumber;
     }
 
-    public CustomTree<int> ReadFile( bool readAll = false )
+    public List<(int, int)> ReadFile( bool readAll = false )
     {
-        Dictionary<int, int> values;
+        List<(int, int)> values;
 
         if ( readAll )
         {
@@ -47,18 +47,12 @@ public class TreeReaderService : IDisposable, ITreeReaderService
 
         _reader.Close();
 
-        var tree = new CustomTree<int>();
-        foreach ( var pair in values )
-        {
-            tree.Add( pair.Key, pair.Value );
-        }
-
-        return tree;
+        return values;
     }
 
-    private Dictionary<int, int> ReadAndParse()
+    private List<(int, int)> ReadAndParse()
     {
-        var result = new Dictionary<int, int>();
+        var result = new List<(int, int)>();
 
         while ( !_reader.EndOfStream )
         {
@@ -83,9 +77,9 @@ public class TreeReaderService : IDisposable, ITreeReaderService
         return result;
     }
 
-    private Dictionary<int, int> ReadAllInMemoryAndParse()
+    private List<(int, int)> ReadAllInMemoryAndParse()
     {
-        var result = new Dictionary<int, int>();
+        var result = new List<(int, int)>();
 
         string[] lines = _reader.ReadToEnd().Split( '\n' );
         foreach ( string line in lines )
@@ -105,41 +99,17 @@ public class TreeReaderService : IDisposable, ITreeReaderService
         return result;
     }
 
-    private void AddItem( int item1, int item2, Dictionary<int, int> result )
+    private void AddItem( int item1, int item2, List<(int, int)> result )
     {
-        if ( !result.ContainsKey( item1 ) )
+        bool firstExists = result.Any( pair => pair.Item1 == item1 );
+        bool secondExists = result.Any( pair => pair.Item2 == item2 );
+
+        if ( firstExists && secondExists )
         {
-            result.Add( item1, item2 );
-            return;
+            throw new Exception( $"Both values: {item1}, {item2} already exist" );
         }
 
-        if ( !result.ContainsKey( item2 ) )
-        {
-            result.Add( item2, item1 );
-            return;
-        }
-
-        var canSwitch = result.FirstOrDefault(
-            pair => pair.Key == item1 && !result.ContainsKey( pair.Value ),
-            new KeyValuePair<int, int>( -1, -1 ) );
-        if ( canSwitch.Key != -1 )
-        {
-            result.Remove( canSwitch.Key );
-            result.Add( canSwitch.Value, canSwitch.Key );
-            result.Add( item1, item2 );
-            return;
-        }
-
-        canSwitch = result.FirstOrDefault(
-            pair => pair.Key == item2 && !result.ContainsKey( pair.Value ),
-            new KeyValuePair<int, int>( -1, -1 ) );
-        if ( canSwitch.Key != -1 )
-        {
-            result.Remove( canSwitch.Key );
-            result.Add( canSwitch.Value, canSwitch.Key );
-            result.Add( item2, item1 );
-            return;
-        }
+        result.Add( (item1, item2) );
     }
 
     public void Dispose()
