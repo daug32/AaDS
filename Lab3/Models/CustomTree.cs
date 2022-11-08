@@ -20,6 +20,7 @@ internal interface ICustomTreeDebug<T>
 public class CustomTree<T> : ICustomTreeDebug<T>
 {
     private CustomTreeNode<T>? _head;
+    private readonly IComparer<T> _comparer;
 
     public T Head
     {
@@ -47,25 +48,30 @@ public class CustomTree<T> : ICustomTreeDebug<T>
 
     public bool IsEmpty => _head == null;
 
-    public CustomTree()
+    public CustomTree( IComparer<T> comparer )
     {
         _head = null;
+        _comparer = comparer;
     }
 
-    public CustomTree( T initialData )
+    public CustomTree( T initialData, IComparer<T> comparer )
     {
         _head = new CustomTreeNode<T>( initialData );
+        _comparer = comparer;
     }
 
-    public CustomTree( List<(T, T)> relatedData )
+    public CustomTree( List<(T, T)> relatedData, IComparer<T> comparer )
     {
+        _comparer = comparer;
+
         if ( relatedData == null || relatedData.Count < 1 )
         {
             return;
         }
 
-        foreach ( var item in relatedData )
+        for ( int i = 0; i < relatedData.Count; i++ )
         {
+            var item = relatedData[ i ];
             Add( item.Item1, item.Item2 );
         }
     }
@@ -90,29 +96,22 @@ public class CustomTree<T> : ICustomTreeDebug<T>
             return;
         }
 
-        if ( _head!.Data!.Equals( value1 ) )
+        if ( _comparer.Compare( value1, _head!.Data ) == 0 )
         {
             _head.Childs.Add( new CustomTreeNode<T>( value2, _head ) );
             return;
         }
 
-        if ( _head!.Data!.Equals( value2 ) )
+        if ( _comparer.Compare( value2, _head!.Data ) == 0 )
         {
             _head.Childs.Add( new CustomTreeNode<T>( value1, _head ) );
             return;
         }
 
-        var parent = Find( value1, _head.Childs );
+        var parent = Find( value1, _head!.Childs );
         if ( parent != null )
         {
             parent.Childs.Add( new CustomTreeNode<T>( value2, parent ) );
-            return;
-        }
-
-        parent = Find( value2, _head.Childs );
-        if ( parent != null )
-        {
-            parent.Childs.Add( new CustomTreeNode<T>( value1, parent ) );
             return;
         }
 
@@ -207,7 +206,7 @@ public class CustomTree<T> : ICustomTreeDebug<T>
     {
         foreach ( var node in nodes )
         {
-            if ( node!.Data!.Equals( key ) )
+            if ( _comparer.Compare( node!.Data, key ) == 0 )
             {
                 return node;
             }
@@ -215,7 +214,13 @@ public class CustomTree<T> : ICustomTreeDebug<T>
 
         foreach ( var node in nodes )
         {
+            if ( node.Childs.Count < 1 )
+            {
+                continue;
+            }
+
             var result = Find( key, node.Childs );
+
             if ( result != null )
             {
                 return result;

@@ -22,7 +22,7 @@ internal class CustomTreeTest
             (1, 5),
             (2, 3),
             (2, 4),
-        } );
+        }, new Int32Comparer() );
 
         Test( tree, 1, 2 );
     }
@@ -35,7 +35,7 @@ internal class CustomTreeTest
             (1, 3),
             (3, 4),
             (4, 5),
-        } );
+        }, new Int32Comparer() );
 
         Test( tree, 3 );
     }
@@ -49,7 +49,7 @@ internal class CustomTreeTest
             (3, 4),
             (4, 5),
             (5, 6),
-        } );
+        }, new Int32Comparer() );
 
         Test( tree, 3, 4 );
     }
@@ -66,7 +66,7 @@ internal class CustomTreeTest
             (4, 7),
             (8, 9),
             (9, 10),
-        } );
+        }, new Int32Comparer() );
 
         Test( tree, 4, 8 );
     }

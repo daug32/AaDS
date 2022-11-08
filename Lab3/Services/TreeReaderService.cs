@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Xml.Linq;
-using Lab3.Models;
-
-namespace Lab3.Services;
+﻿namespace Lab3.Services;
 
 public interface ITreeReaderService
 {

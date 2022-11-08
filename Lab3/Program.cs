@@ -55,12 +55,13 @@ public class Program
             CustomTreeTest.RunTests();
             TreeReaderServiceTest.RunTests();
             CustomTreeBuilderTest.RunTests();
+            PerformanceTest.RunTests();
 
             Console.WriteLine();
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( $"Tests were not passed. Execution has been terminated\n{ex.StackTrace}" );
+            Console.WriteLine( $"Tests were not passed. Execution has been terminated:\n\n{ex.Message}\n{ex.StackTrace}" );
             return false;
         }
 
