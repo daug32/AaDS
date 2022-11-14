@@ -2,8 +2,6 @@
 
 internal interface ICustomTreeDebug<T>
 {
-    T Head { get; set; }
-
     bool IsEmpty { get; }
 
     void Add( T key, T value );
@@ -20,59 +18,46 @@ internal interface ICustomTreeDebug<T>
 public class CustomTree<T> : ICustomTreeDebug<T>
 {
     private CustomTreeNode<T>? _head;
-    private readonly IComparer<T> _comparer;
+    private Dictionary<T, CustomTreeNode<T>> _items;
 
-    public T Head
-    {
-        get
-        {
-            if ( IsEmpty )
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+    private readonly IEqualityComparer<T> _comparer;
 
-            return _head!.Data;
-        }
+    public bool IsEmpty => _items.Count == 0;
 
-        set
-        {
-            if ( IsEmpty )
-            {
-                _head = new CustomTreeNode<T>( value );
-                return;
-            }
-
-            _head!.Data = value;
-        }
-    }
-
-    public bool IsEmpty => _head == null;
-
-    public CustomTree( IComparer<T> comparer )
+    public CustomTree( IEqualityComparer<T> comparer )
     {
         _head = null;
-        _comparer = comparer;
+        _items = new Dictionary<T, CustomTreeNode<T>>( comparer );
     }
 
-    public CustomTree( T initialData, IComparer<T> comparer )
+    public CustomTree( T initialData, IEqualityComparer<T> comparer )
     {
         _head = new CustomTreeNode<T>( initialData );
-        _comparer = comparer;
+        _items = new Dictionary<T, CustomTreeNode<T>>( comparer )
+        {
+            { initialData, _head }
+        };
     }
 
-    public CustomTree( List<(T, T)> relatedData, IComparer<T> comparer )
+    public CustomTree( List<(T, T)> relatedData, IEqualityComparer<T> comparer )
     {
         _comparer = comparer;
+        _items = new Dictionary<T, CustomTreeNode<T>>( comparer );
 
         if ( relatedData == null || relatedData.Count < 1 )
         {
             return;
         }
 
-        for ( int i = 0; i < relatedData.Count; i++ )
+        var pair = relatedData.First();
+        _head = new CustomTreeNode<T>( pair.Item1 );
+        _items.Add( pair.Item1, _head );
+        AddWithoutCheckingHead( pair.Item1, pair.Item2 );
+
+        for ( int i = 1; i < relatedData.Count; i++ )
         {
             var item = relatedData[ i ];
-            Add( item.Item1, item.Item2 );
+            AddWithoutCheckingHead( item.Item1, item.Item2 );
         }
     }
 
@@ -83,8 +68,10 @@ public class CustomTree<T> : ICustomTreeDebug<T>
             return;
         }
 
-        func( _head!.Data );
-        Iterate( ( node ) => func( node.Data ), _head.Childs );
+        foreach ( var item in _items )
+        {
+            func( item.Key );
+        }
     }
 
     public void Add( T value1, T value2 )
@@ -92,30 +79,54 @@ public class CustomTree<T> : ICustomTreeDebug<T>
         if ( IsEmpty )
         {
             _head = new CustomTreeNode<T>( value1 );
-            _head.Childs.Add( new CustomTreeNode<T>( value2, _head ) );
+            _items.Add( value1, _head );
+        }
+
+        CustomTreeNode<T> parent;
+        if ( _items.TryGetValue( value1, out parent ) )
+        {
+            var child = new CustomTreeNode<T>( value2, parent );
+            parent.Childs.Add( child );
+            _items.Add( value2, child );
+
             return;
         }
 
-        if ( _comparer.Compare( value1, _head!.Data ) == 0 )
+        if ( _items.TryGetValue( value2, out parent ) )
         {
-            _head.Childs.Add( new CustomTreeNode<T>( value2, _head ) );
-            return;
-        }
+            var child = new CustomTreeNode<T>( value1, parent );
+            parent.Childs.Add( child );
+            _items.Add( value1, child );
 
-        if ( _comparer.Compare( value2, _head!.Data ) == 0 )
-        {
-            _head.Childs.Add( new CustomTreeNode<T>( value1, _head ) );
-            return;
-        }
-
-        var parent = Find( value1, _head!.Childs );
-        if ( parent != null )
-        {
-            parent.Childs.Add( new CustomTreeNode<T>( value2, parent ) );
             return;
         }
 
         throw new IndexOutOfRangeException( $"Don't know where to place pair: {value1}/{value2}" );
+    }
+
+    private void AddWithoutCheckingHead( T value1, T value2 )
+    {
+        CustomTreeNode<T> parent;
+        if ( _items.TryGetValue( value1, out parent ) )
+        {
+            var child = new CustomTreeNode<T>( value2, parent );
+            parent.Childs.Add( child );
+            _items.Add( value2, child );
+
+            return;
+        }
+
+        if ( _items.TryGetValue( value2, out parent ) )
+        {
+            var child = new CustomTreeNode<T>( value1, parent );
+            parent.Childs.Add( child );
+            _items.Add( value1, child );
+
+            return;
+        }
+
+        throw new IndexOutOfRangeException( $"Don't know where to place pair: {value1}/{value2}" );
+
     }
 
     public List<T> Optimize()
@@ -177,9 +188,12 @@ public class CustomTree<T> : ICustomTreeDebug<T>
             return 0;
         }
 
-        var node = Find( targetValue, new List<CustomTreeNode<T>> { _head } );
+        if ( _items.TryGetValue( targetValue, out var node ) )
+        {
+            return GetDepth( node );
+        }
 
-        return node == null ? 0 : GetDepth( node );
+        return 0;
     }
 
     private int GetDepth( CustomTreeNode<T> node )
@@ -200,47 +214,6 @@ public class CustomTree<T> : ICustomTreeDebug<T>
         }
 
         return depth;
-    }
-
-    private CustomTreeNode<T>? Find( T key, List<CustomTreeNode<T>> nodes )
-    {
-        foreach ( var node in nodes )
-        {
-            if ( _comparer.Compare( node!.Data, key ) == 0 )
-            {
-                return node;
-            }
-        }
-
-        foreach ( var node in nodes )
-        {
-            if ( node.Childs.Count < 1 )
-            {
-                continue;
-            }
-
-            var result = Find( key, node.Childs );
-
-            if ( result != null )
-            {
-                return result;
-            }
-        }
-
-        return null;
-    }
-
-    private void Iterate( Action<CustomTreeNode<T>> func, List<CustomTreeNode<T>> nodes )
-    {
-        foreach ( var node in nodes )
-        {
-            func( node );
-        }
-
-        foreach ( var node in nodes )
-        {
-            Iterate( func, node.Childs );
-        }
     }
 
     private void SetHead( CustomTreeNode<T> node )
@@ -270,9 +243,9 @@ public class CustomTree<T> : ICustomTreeDebug<T>
     {
         if ( IsEmpty )
         {
-            return false; 
+            return false;
         }
 
-        return Find( data, new List<CustomTreeNode<T>>() { _head! } ) != null;
+        return _items.ContainsKey( data );
     }
 }

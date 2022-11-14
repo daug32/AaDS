@@ -12,7 +12,7 @@ internal static class CustomTreeBuilderTest
         Test1();
         Test2();
         Test3();
-        Test4();    
+        Test4();
 
         Console.WriteLine( "CustomTreeBuilder test is success" );
     }
@@ -31,7 +31,7 @@ internal static class CustomTreeBuilderTest
             (1, 2),
             (2, 3),
             (3, 4)
-        }, new Int32Comparer() );
+        }, new Int32EqualityComparer() );
 
         Test( input, expected );
     }
@@ -52,7 +52,7 @@ internal static class CustomTreeBuilderTest
             (1, 3),
             (1, 4),
             (4, 5)
-        }, new Int32Comparer() );
+        }, new Int32EqualityComparer() );
 
         Test( input, expected );
     }
@@ -68,9 +68,9 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( new Int32Comparer() ) );
+            Test( input, new CustomTree<int>( new Int32EqualityComparer() ) );
         }
-        catch (ArgumentException)
+        catch ( ArgumentException )
         {
             return;
         }
@@ -91,7 +91,7 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( new Int32Comparer() ) );
+            Test( input, new CustomTree<int>( new Int32EqualityComparer() ) );
         }
         catch ( ArgumentException )
         {
@@ -103,7 +103,7 @@ internal static class CustomTreeBuilderTest
 
     private static void Test( List<(int, int)> input, CustomTree<int> expected )
     {
-        var result = _builder.Build( input );
+        var result = _builder.Build( input, new Int32EqualityComparer() );
 
         expected.ForEach( el =>
         {

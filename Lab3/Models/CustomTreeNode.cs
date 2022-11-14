@@ -6,7 +6,7 @@ internal class CustomTreeNode<T>
     public CustomTreeNode<T>? Parent;
     public List<CustomTreeNode<T>> Childs = new List<CustomTreeNode<T>>();
 
-    public CustomTreeNode(T data, CustomTreeNode<T>? parent = null)
+    public CustomTreeNode( T data, CustomTreeNode<T> parent = null )
     {
         Data = data;
         Parent = parent;

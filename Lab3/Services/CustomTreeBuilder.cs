@@ -4,7 +4,7 @@ namespace Lab3.Services;
 
 public interface ICustomTreeBuilder<T>
 {
-    CustomTree<T> Build( List<(T, T)> values );
+    CustomTree<T> Build( List<(T, T)> values, IEqualityComparer<T> equalityComparer );
 }
 
 public class CustomTreeBuilder<T> : ICustomTreeBuilder<T>
@@ -16,16 +16,16 @@ public class CustomTreeBuilder<T> : ICustomTreeBuilder<T>
         _comparer = comparer;
     }
 
-    public CustomTree<T> Build( List<(T, T)> input )
+    public CustomTree<T> Build( List<(T, T)> input, IEqualityComparer<T> equalityComparer )
     {
         if ( input.Count < 1 )
         {
-            return new CustomTree<T>( _comparer );
+            return new CustomTree<T>( equalityComparer );
         }
 
         (T, T) pair = input[ 0 ];
 
-        var tree = new CustomTree<T>( pair.Item1, _comparer );
+        var tree = new CustomTree<T>( pair.Item1, equalityComparer );
         var existingNodes = new List<T>() { pair.Item1 };
 
         while ( input.Count > 0 )

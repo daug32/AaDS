@@ -87,7 +87,7 @@ public class Program
 
         var nodes = readerService.ReadFile( true );
 
-        var tree = treeBuilder.Build( nodes );
+        var tree = treeBuilder.Build( nodes, new Int32EqualityComparer() );
 
         var optimalValues = tree
             .Optimize()
