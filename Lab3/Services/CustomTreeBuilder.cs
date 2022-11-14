@@ -4,29 +4,28 @@ namespace Lab3.Services;
 
 public interface ICustomTreeBuilder<T>
 {
-    CustomTree<T> Build( List<(T, T)> values, IEqualityComparer<T> equalityComparer );
+    CustomTree<T> Build( List<(T, T)> values );
 }
 
 public class CustomTreeBuilder<T> : ICustomTreeBuilder<T>
 {
-    private readonly IComparer<T> _comparer;
-
-    public CustomTreeBuilder( IComparer<T> comparer )
-    {
-        _comparer = comparer;
-    }
-
-    public CustomTree<T> Build( List<(T, T)> input, IEqualityComparer<T> equalityComparer )
+    public CustomTree<T> Build( List<(T, T)> input )
     {
         if ( input.Count < 1 )
         {
-            return new CustomTree<T>( equalityComparer );
+            return new CustomTree<T>(  );
         }
 
         (T, T) pair = input[ 0 ];
 
-        var tree = new CustomTree<T>( pair.Item1, equalityComparer );
-        var existingNodes = new List<T>() { pair.Item1 };
+        var tree = new CustomTree<T>( pair.Item1 );
+        var existingNodes = new SortedSet<T>() { pair.Item1 };
+
+        if ( input.Count == 1 )
+        {
+            tree.Add( pair.Item1, pair.Item2 );
+            return tree;
+        }
 
         while ( input.Count > 0 )
         {
@@ -36,21 +35,8 @@ public class CustomTreeBuilder<T> : ICustomTreeBuilder<T>
             {
                 pair = input[ i ];
 
-                bool keyExists = false; 
-                bool valueExists = false;
-                foreach ( var item in existingNodes )
-                {
-                    if ( _comparer.Compare( item, pair.Item1 ) == 0 )
-                    {
-                        keyExists = true;
-                        continue;
-                    }
-
-                    if ( _comparer.Compare( item, pair.Item2 ) == 0 )
-                    {
-                        valueExists = true;
-                    }
-                }
+                bool keyExists = existingNodes.Contains( pair.Item1 );
+                bool valueExists = existingNodes.Contains( pair.Item2 );
 
                 if ( keyExists && valueExists )
                 {

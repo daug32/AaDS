@@ -20,29 +20,26 @@ public class CustomTree<T> : ICustomTreeDebug<T>
     private CustomTreeNode<T>? _head;
     private Dictionary<T, CustomTreeNode<T>> _items;
 
-    private readonly IEqualityComparer<T> _comparer;
-
     public bool IsEmpty => _items.Count == 0;
 
-    public CustomTree( IEqualityComparer<T> comparer )
+    public CustomTree()
     {
         _head = null;
-        _items = new Dictionary<T, CustomTreeNode<T>>( comparer );
+        _items = new Dictionary<T, CustomTreeNode<T>>();
     }
 
-    public CustomTree( T initialData, IEqualityComparer<T> comparer )
+    public CustomTree( T initialData )
     {
         _head = new CustomTreeNode<T>( initialData );
-        _items = new Dictionary<T, CustomTreeNode<T>>( comparer )
+        _items = new Dictionary<T, CustomTreeNode<T>>()
         {
             { initialData, _head }
         };
     }
 
-    public CustomTree( List<(T, T)> relatedData, IEqualityComparer<T> comparer )
+    public CustomTree( List<(T, T)> relatedData )
     {
-        _comparer = comparer;
-        _items = new Dictionary<T, CustomTreeNode<T>>( comparer );
+        _items = new Dictionary<T, CustomTreeNode<T>>();
 
         if ( relatedData == null || relatedData.Count < 1 )
         {
@@ -134,6 +131,11 @@ public class CustomTree<T> : ICustomTreeDebug<T>
         if ( _head == null )
         {
             return new List<T>();
+        }
+
+        if ( _items.Count == 2 )
+        {
+            return new List<T>() { _items.First().Key, _items.Last().Key };
         }
 
         while ( true )

@@ -1,4 +1,5 @@
-﻿using Lab3.Models;
+﻿using System.Xml.Linq;
+using Lab3.Models;
 using Lab3.Services;
 using Lab3.Tests;
 
@@ -58,6 +59,47 @@ public class Program
             PerformanceTest.RunTests();
 
             Console.WriteLine();
+            for ( int i = 0; i <= 20; i++ )
+            {
+                string input = $"input{i}.txt";
+                if ( !File.Exists( input ) )
+                {
+                    continue;
+                }
+
+                var fileStream = new StreamReader( input );
+                var readerService = new TreeReaderService( fileStream );
+                var treeBuilder = new CustomTreeBuilder<int>(  );
+
+                var nodes = readerService.ReadFile( true );
+                var tree = treeBuilder.Build( nodes );
+
+                if ( i != 9 && i != 10 && i != 12 && i != 13 && i != 14 )
+                {
+                    tree.Optimize().ForEach( Console.WriteLine );
+
+                    Console.WriteLine( $"{i} is success" );
+                }
+                else
+                {
+                    Console.WriteLine( $"{i} - stack overflow" );
+                    continue;
+                }
+
+                string output = $"output{i}.txt";
+                if ( !File.Exists( output ) )
+                {
+                    continue;
+                }
+
+                Console.WriteLine( $"{i}:\n{File.ReadAllText( output )}\n\n" );
+            }
+
+            for ( int i = 0; i <= 20; i++ )
+            {
+            }
+
+            Console.WriteLine();
         }
         catch ( Exception ex )
         {
@@ -83,11 +125,11 @@ public class Program
     {
         var fileStream = new StreamReader( input );
         var readerService = new TreeReaderService( fileStream );
-        var treeBuilder = new CustomTreeBuilder<int>( new Int32Comparer() );
+        var treeBuilder = new CustomTreeBuilder<int>(  );
 
         var nodes = readerService.ReadFile( true );
 
-        var tree = treeBuilder.Build( nodes, new Int32EqualityComparer() );
+        var tree = treeBuilder.Build( nodes );
 
         var optimalValues = tree
             .Optimize()

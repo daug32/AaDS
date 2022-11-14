@@ -80,10 +80,15 @@ public class TreeReaderService : IDisposable, ITreeReaderService
         string[] lines = _reader.ReadToEnd().Split( '\n' );
         foreach ( string line in lines )
         {
+            if ( String.IsNullOrWhiteSpace( line ) )
+            {
+                continue;
+            }
+
             string[] numbers = line.Trim().Split( ' ' );
             if ( numbers.Length != 2 )
             {
-                throw new ArgumentException( "The target input file is in incorrect format" );
+                throw new ArgumentException( $"The target input file is in incorrect format:\n{line}." );
             }
 
             int item1 = int.Parse( numbers.First() );
@@ -97,14 +102,6 @@ public class TreeReaderService : IDisposable, ITreeReaderService
 
     private void AddItem( int item1, int item2, List<(int, int)> result )
     {
-        bool firstExists = result.Any( pair => pair.Item1 == item1 );
-        bool secondExists = result.Any( pair => pair.Item2 == item2 );
-
-        if ( firstExists && secondExists )
-        {
-            throw new Exception( $"Both values: {item1}, {item2} already exist" );
-        }
-
         result.Add( (item1, item2) );
     }
 

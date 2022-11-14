@@ -1,12 +1,11 @@
 ﻿using Lab3.Models;
-using Lab3.Services;
 
 namespace Lab3.Tests;
 
 internal class PerformanceTest
 {
     private static int _nextId = 1;
-    private static CustomTree<int> _tree = new CustomTree<int>( new Int32EqualityComparer() );
+    private static CustomTree<int> _tree = new CustomTree<int>( );
     private static List<(int, int)> _values = new List<(int, int)>();
 
     public const int MaxChildsCount = 10;
@@ -31,7 +30,7 @@ internal class PerformanceTest
 
         Console.WriteLine( $"Generated! {DateTime.Now.ToString( "mm:ss:ff" )}" );
 
-        _tree = new CustomTree<int>( _values, new Int32EqualityComparer() );
+        _tree = new CustomTree<int>( _values );
 
         Console.WriteLine( $"Recursion test is success. {DateTime.Now.ToString( "mm:ss:ff" )}" );
 
@@ -53,7 +52,7 @@ internal class PerformanceTest
 
         Console.WriteLine( $"Generated! {DateTime.Now.ToString( "mm:ss:ff" )}" );
 
-        _tree = new CustomTree<int>( _values, new Int32EqualityComparer() );
+        _tree = new CustomTree<int>( _values );
 
         Console.WriteLine( $"Tree was generated {DateTime.Now.ToString( "mm:ss:ff" )}" );
 

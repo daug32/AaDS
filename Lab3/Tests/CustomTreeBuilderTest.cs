@@ -5,7 +5,7 @@ namespace Lab3.Tests;
 
 internal static class CustomTreeBuilderTest
 {
-    private static readonly CustomTreeBuilder<int> _builder = new CustomTreeBuilder<int>( new Int32Comparer() );
+    private static readonly CustomTreeBuilder<int> _builder = new CustomTreeBuilder<int>( );
 
     public static void RunTests()
     {
@@ -31,7 +31,7 @@ internal static class CustomTreeBuilderTest
             (1, 2),
             (2, 3),
             (3, 4)
-        }, new Int32EqualityComparer() );
+        } );
 
         Test( input, expected );
     }
@@ -52,7 +52,7 @@ internal static class CustomTreeBuilderTest
             (1, 3),
             (1, 4),
             (4, 5)
-        }, new Int32EqualityComparer() );
+        } );
 
         Test( input, expected );
     }
@@ -68,7 +68,7 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( new Int32EqualityComparer() ) );
+            Test( input, new CustomTree<int>( ) );
         }
         catch ( ArgumentException )
         {
@@ -91,7 +91,7 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( new Int32EqualityComparer() ) );
+            Test( input, new CustomTree<int>( ) );
         }
         catch ( ArgumentException )
         {
@@ -103,7 +103,7 @@ internal static class CustomTreeBuilderTest
 
     private static void Test( List<(int, int)> input, CustomTree<int> expected )
     {
-        var result = _builder.Build( input, new Int32EqualityComparer() );
+        var result = _builder.Build( input );
 
         expected.ForEach( el =>
         {
