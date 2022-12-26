@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-using Lab3.Models;
-using Lab3.Services;
+﻿using Lab3.Services;
 using Lab3.Tests;
 
 namespace Lab3;
@@ -69,7 +67,7 @@ public class Program
 
                 var fileStream = new StreamReader( input );
                 var readerService = new TreeReaderService( fileStream );
-                var treeBuilder = new CustomTreeBuilder<int>(  );
+                var treeBuilder = new CustomTreeBuilder<int>();
 
                 var nodes = readerService.ReadFile( true );
                 var tree = treeBuilder.Build( nodes );
@@ -125,7 +123,7 @@ public class Program
     {
         var fileStream = new StreamReader( input );
         var readerService = new TreeReaderService( fileStream );
-        var treeBuilder = new CustomTreeBuilder<int>(  );
+        var treeBuilder = new CustomTreeBuilder<int>();
 
         var nodes = readerService.ReadFile( true );
 

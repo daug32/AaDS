@@ -1,5 +1,4 @@
-﻿using Lab3.Models;
-using Lab3.Services;
+﻿using Lab3.Services;
 
 namespace Lab3.Tests;
 

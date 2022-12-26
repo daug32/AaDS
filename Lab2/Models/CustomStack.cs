@@ -10,7 +10,7 @@ public class CustomStack<T>
 
     CustomStackItem<T>? Head;
 
-    public CustomStack() 
+    public CustomStack()
     {
     }
 

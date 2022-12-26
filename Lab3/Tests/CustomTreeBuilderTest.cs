@@ -5,7 +5,7 @@ namespace Lab3.Tests;
 
 internal static class CustomTreeBuilderTest
 {
-    private static readonly CustomTreeBuilder<int> _builder = new CustomTreeBuilder<int>( );
+    private static readonly CustomTreeBuilder<int> _builder = new CustomTreeBuilder<int>();
 
     public static void RunTests()
     {
@@ -68,7 +68,7 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( ) );
+            Test( input, new CustomTree<int>() );
         }
         catch ( ArgumentException )
         {
@@ -91,7 +91,7 @@ internal static class CustomTreeBuilderTest
 
         try
         {
-            Test( input, new CustomTree<int>( ) );
+            Test( input, new CustomTree<int>() );
         }
         catch ( ArgumentException )
         {

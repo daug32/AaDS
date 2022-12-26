@@ -5,7 +5,7 @@ namespace Lab3.Tests;
 internal class PerformanceTest
 {
     private static int _nextId = 1;
-    private static CustomTree<int> _tree = new CustomTree<int>( );
+    private static CustomTree<int> _tree = new CustomTree<int>();
     private static List<(int, int)> _values = new List<(int, int)>();
 
     public const int MaxChildsCount = 10;

@@ -13,7 +13,7 @@ public class CustomTreeBuilder<T> : ICustomTreeBuilder<T>
     {
         if ( input.Count < 1 )
         {
-            return new CustomTree<T>(  );
+            return new CustomTree<T>();
         }
 
         (T, T) pair = input[ 0 ];

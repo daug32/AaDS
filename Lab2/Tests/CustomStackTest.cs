@@ -1,12 +1,11 @@
 ﻿using Lab2.Models;
-using Lab2.Services;
 
 namespace Lab2.Tests;
 
 internal class CustomStackTest
 {
     private static CustomStack<int> _stack;
-    
+
     public static void RunTests()
     {
         TestEmpty();
